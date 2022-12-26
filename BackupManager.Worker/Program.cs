@@ -47,6 +47,7 @@ IHost host = Host.CreateDefaultBuilder(args)
                 .UsingJobData("frequency", Convert.ToInt16(BackupFrequency.Hourly))
                 .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(1).RepeatForever())
                 .WithDescription("Hourly backup of replica database via 'Mariabackup' tool.")
+                .StartNow()
             );
 
             // Daily backup scheduling
@@ -55,6 +56,7 @@ IHost host = Host.CreateDefaultBuilder(args)
                 .UsingJobData("frequency", Convert.ToInt16(BackupFrequency.Daily))
                 .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(24).RepeatForever())
                 .WithDescription("Daily backup of replica database via 'Mariabackup' tool.")
+                .StartNow()
             );
 
             // Weekly backup scheduling
@@ -63,6 +65,7 @@ IHost host = Host.CreateDefaultBuilder(args)
                 .UsingJobData("frequency", Convert.ToInt16(BackupFrequency.Weekly))
                 .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(168).RepeatForever())
                 .WithDescription("Weekly backup of replica database via 'Mariabackup' tool.")
+                .StartNow()
             );
         });
 

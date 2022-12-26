@@ -23,17 +23,8 @@ namespace BackupManager.Worker
             //{
             //    throw new Exception("Only linux distros are supported.");
             //}
-
-            // you can have base properties
-            var properties = new NameValueCollection();
-
-            // Grab the Scheduler instance from the Factory 
-            IScheduler scheduler = (IScheduler)await StdSchedulerFactory.GetDefaultScheduler(stoppingToken);
-
             try
             {
-
-
                 // and last shut down the scheduler when you are ready to close your program
                 while (!stoppingToken.IsCancellationRequested)
                 {
