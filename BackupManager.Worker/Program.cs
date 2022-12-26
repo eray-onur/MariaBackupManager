@@ -38,7 +38,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             q.UseInMemoryStore();
             q.UseDefaultThreadPool(tp =>
             {
-                tp.MaxConcurrency = 10;
+                tp.MaxConcurrency = 1;
             });
 
             // Hourly backup scheduling
