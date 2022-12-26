@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackupManager.Worker.Jobs.Abstracts
+namespace BackupManager.Worker.Jobs
 {
-    public enum BackupType
+    public enum BackupFrequency
     {
         Hourly,
         Daily,

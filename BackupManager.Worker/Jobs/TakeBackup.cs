@@ -1,5 +1,4 @@
-﻿using BackupManager.Worker.Jobs.Abstracts;
-using BackupManager.Worker.Services;
+﻿using BackupManager.Worker.Services;
 using Quartz;
 using Quartz.Util;
 using System;
@@ -19,8 +18,26 @@ namespace BackupManager.Worker.Jobs
             _config = config;
             _fileLoggingService = fileLoggingService;
         }
+        private string DetermineBackupDirectory(BackupFrequency backupFrequency)
+        {
+            var backupSettings = _config.GetSection("BackupSettings");
+            switch (backupFrequency)
+            {
+                case BackupFrequency.Hourly:
+                    return backupSettings.GetValue<string>("HourlyBackupDirectoryName");
+                case BackupFrequency.Daily:
+                    return backupSettings.GetValue<string>("DailyBackupDirectoryName");
+                case BackupFrequency.Weekly:
+                    return backupSettings.GetValue<string>("WeeklyBackupDirectoryName");
+                default:
+                    return string.Empty;
+            }
+        }
         public Task Execute(IJobExecutionContext context)
         {
+            JobDataMap dataMap = context.JobDetail.JobDataMap;
+            BackupFrequency frequency = (BackupFrequency) dataMap.GetInt("frequency");
+
             ProcessStartInfo ProcessInfo;
             Process? Process;
 
@@ -32,10 +49,8 @@ namespace BackupManager.Worker.Jobs
             string password = backupSettings.GetValue<string>("BackupPassword");
             string backupDirRoot = backupSettings.GetValue<string>("BackupDirectoryRoot");
             string hourlyBackupDir = backupSettings.GetValue<string>("HourlyBackupDirectoryName");
-            //
-            //string Command = $"mariabackup --backup --target-dir={backupDirRoot}{hourlyBackupDir} " +
-            //    $"--user={username} --password={password}";
-            string Command = $"--backup --target-dir={backupDirRoot}{hourlyBackupDir} " +
+
+            string Command = $"--backup --target-dir={backupDirRoot}{DetermineBackupDirectory(frequency)} " +
                 $"--user={username} --password={password}";
 
             _fileLoggingService.AppendToFile("[Backup]", $"Command to execute: {Command}");

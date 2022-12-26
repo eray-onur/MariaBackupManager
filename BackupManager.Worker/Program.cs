@@ -41,12 +41,28 @@ IHost host = Host.CreateDefaultBuilder(args)
                 tp.MaxConcurrency = 10;
             });
 
-            // quickest way to create a job with single trigger is to use ScheduleJob
-            // (requires version 3.2)
+            // Hourly backup scheduling
             q.ScheduleJob<TakeBackup>(trigger => trigger
-                .WithIdentity("Combined Configuration Trigger")
+                .WithIdentity("Hourly Backup")
+                .UsingJobData("frequency", Convert.ToInt16(BackupFrequency.Hourly))
                 .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(1).RepeatForever())
                 .WithDescription("Hourly backup of replica database via 'Mariabackup' tool.")
+            );
+
+            // Daily backup scheduling
+            q.ScheduleJob<TakeBackup>(trigger => trigger
+                .WithIdentity("Daily Backup")
+                .UsingJobData("frequency", Convert.ToInt16(BackupFrequency.Daily))
+                .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(24).RepeatForever())
+                .WithDescription("Daily backup of replica database via 'Mariabackup' tool.")
+            );
+
+            // Weekly backup scheduling
+            q.ScheduleJob<TakeBackup>(trigger => trigger
+                .WithIdentity("Weekly Backup")
+                .UsingJobData("frequency", Convert.ToInt16(BackupFrequency.Weekly))
+                .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(168).RepeatForever())
+                .WithDescription("Weekly backup of replica database via 'Mariabackup' tool.")
             );
         });
 
